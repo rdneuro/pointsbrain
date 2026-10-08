@@ -1,0 +1,66 @@
+# pyproject.toml -- pointsbrain
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pointsbrain"
+version = "0.1.0"
+description = "Spectral analysis of brain structures as point clouds -- the point-cloud sibling of SpectralBrain."
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Rodrigo Debona", email = "r.debona@ufrj.br" }]
+keywords = ["neuroscience", "neuroimaging", "point-cloud", "laplace-beltrami", "spectral-analysis", "tractseg"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+# SpectralBrain supplies the SpectralDecomposition, every descriptor, the
+# statistics and the figures; pointsbrain only adds the point-cloud geometry.
+dependencies = [
+    "spectralbrain>=0.1,<0.2",
+    "numpy>=1.26",
+    "scipy>=1.13",
+    "scikit-learn>=1.4",
+    "robust_laplacian>=0.3",
+]
+
+[project.optional-dependencies]
+viz = ["vedo>=2024.5", "open3d>=0.19", "matplotlib>=3.8"]
+full = ["pointsbrain[viz]"]
+
+[dependency-groups]
+test = ["pytest>=8.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pointsbrain"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "NPY", "RUF"]
+ignore = ["E501", "RUF001", "RUF002", "RUF003", "E741", "B904", "B905"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pointsbrain"]
+known-third-party = ["spectralbrain"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra --strict-markers --strict-config"
+testpaths = ["tests"]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:lapy.*",
+    "ignore::DeprecationWarning:nibabel.*",
+    "ignore::PendingDeprecationWarning",
+]
